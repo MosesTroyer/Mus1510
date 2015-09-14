@@ -1,0 +1,190 @@
+<html>
+
+<head>
+	<link rel=stylesheet href="style.css" type=text/css>
+	<title>Mus 1510 Study</title> 
+</head>
+
+<body>
+
+	<h1>Mus 1510 Song Study</h1>
+
+	<p>
+	Instructions: Click the song bar to start playing a random song from the Exam. Then, select what song you think it is with the selection buttons. Check your answers with the button at the bottom.
+	</p>
+
+	<br />
+
+	<div id="sections"> </div>
+
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<!-- <div class="resultsFloater"></div> --!>
+
+	<div class="footer">
+
+		2015 Moses Troyer
+
+	</div>
+
+	<script type="text/javascript">
+		(function() {
+			var songReplaceHandler = function(url, title, artist) {
+				var youtubeReplace = document.getElementById("youtubeReplace" + url), parent = youtubeReplace.parentNode;
+				       
+				var songParent = document.createElement('div');
+				songParent.className = "songParent";
+				songParent.innerHTML = "<div class='song'><iframe width='300' height='300' src='https://www.youtube.com/embed/" 
+		    							+ url 
+					                    + "?autoplay=1&t=6s' frameborder='0' allowfullscreen></iframe></div>";
+					           
+				youtubeReplace.onclick = function() {
+	        		parent.replaceChild(songParent, youtubeReplace);
+				}		
+			}
+
+			var radioButtonHandler = function(songs, answer, parentSelector) {
+				if(songs.length < 4)
+					var choiceLength = songs.length
+				else
+					var choiceLength = 4;
+
+				var answers = [];
+				var i = 0;
+
+				while(i < choiceLength){
+					var option = Math.floor(Math.random() * songs.length);
+					if (answers.indexOf(option) == -1){ //if the value isn't in the array
+						answers.push(option);
+						i++;
+					}
+				}
+
+				if(answers.indexOf(answer) == -1)
+					answers[Math.floor(Math.random() * choiceLength)] = answer;		
+
+				for(i = 0; i < choiceLength; i++){
+					var radio = document.createElement('input');
+					radio.type = "radio";
+					radio.name = songs[answer].url; //group of answers, will be checked against the selected answer
+
+					radio.value = songs[answers[i]].url;
+
+					parentSelector.appendChild(radio);
+	
+					var label = document.createElement("label");
+					label.innerHTML = songs[answers[i]].title + ", by " + songs[answers[i]].artist;
+	
+					parentSelector.appendChild(label);
+
+					parentSelector.appendChild(document.createElement("br"));
+				}
+
+			}
+
+			var checkAnswers = function(songs) {
+				var correct = 0;
+				
+				for(var i = 0; i < songs.length; i++) {
+					var radio = document.querySelector('input[name = "' + songs[i].url + '"]:checked');
+					
+					if(radio != null){
+						var selected = radio.value;
+						var answer = radio.name;
+						
+						if(selected == answer){
+							correct++;
+						}
+					}
+				}
+		
+				alert("You got " + correct + " out of " + songs.length + ".");
+
+			}
+
+			var sections = [
+				{ title: "Exam 1", songs: [
+					{url: 'GNfgW5cIWT8', title: 'Reckless Blues', artist: 'Bessie Smith & Louis Armstrong'}, 
+					{url: 'W1Z6GkN1UdA', title: 'John the Revelator', artist: 'Son House'},
+					{url: 'uW3c9lPydsY', title: 'Dixie Jazz Band One-Step', artist: 'the Original Dixieland Jazz Band'},
+					{url: 'wpR5X2RpFp0', title: 'West End Blues', artist: 'Louis Armstrong & Earl Hines'},
+					{url: 'BEF9QeHxrYw', title: 'Dippermouth Blues', artist: "King Oliver's Creole Jazz Band"},
+					{url: '-N-y2FButZ0', title: 'King Porter Stomp', artist: 'Jelly Roll Morton'},
+					{url: '7Z8EVAnHiRk', title: 'Honeysuckle Rose', artist: 'Fats Waller', t: '6'}]
+				}];
+
+			var sectionsDiv = document.getElementById("sections");
+
+			for(var i = 0; i < sections.length; i++) {
+
+				var sectionTitle = document.createElement('h2');
+				sectionTitle.innerHTML = sections[i].title;
+				sectionsDiv.appendChild(sectionTitle);
+
+				var songs = [];
+				var k = 0;
+
+				while(k < sections[i].songs.length){
+		 		    var option = Math.floor(Math.random() * sections[i].songs.length);
+		            if (songs.indexOf(sections[i].songs[option]) == -1){ //if the value isn't in the array
+	 	    	        songs.push(sections[i].songs[option]);
+	                    k++;
+	                }
+	            }
+
+				for(j = 0; j < songs.length; j++){
+					
+					var songSection = document.createElement('div');
+
+					sectionsDiv.appendChild(songSection);
+
+					var youtubeReplace = document.createElement('div');
+					youtubeReplace.className = "youtubeReplace";
+					youtubeReplace.id = "youtubeReplace" + songs[j].url;
+					
+					songSection.appendChild(youtubeReplace);
+
+					songReplaceHandler(songs[j].url, 
+										songs[j].title,
+										songs[j].artist);
+
+					var radioButtonDiv = document.createElement('div');
+					radioButtonDiv.className = "radioSelections";
+
+					songSection.appendChild(radioButtonDiv);
+
+					radioButtonHandler(songs, j, radioButtonDiv);
+
+					var divider = document.createElement('div');
+					divider.className = "songDivider";
+
+					songSection.appendChild(divider);
+					
+				}
+
+				var buttonDiv = document.createElement('div');
+				buttonDiv.className = "answerButton";
+
+				sectionsDiv.appendChild(buttonDiv);
+
+				var checkButton = document.createElement('button');
+				checkButton.type = "button";
+				checkButton.innerHTML = "Check Answers";
+				checkButton.id = "checkAnswers" + i;
+
+				buttonDiv.appendChild(checkButton);
+
+				document.getElementById('checkAnswers' + i).onclick = function() { checkAnswers(songs); };
+
+			}
+
+		})();
+			
+	</script>
+
+</body>
+
+</html>
