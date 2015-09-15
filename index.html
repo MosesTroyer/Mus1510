@@ -84,23 +84,18 @@
 			}
 
 			var checkAnswers = function(songs) {
-				var correct = 0;
-				
-				for(var i = 0; i < songs.length; i++) {
-					var radio = document.querySelector('input[name = "' + songs[i].url + '"]:checked');
-					
-					if(radio != null){
-						var selected = radio.value;
-						var answer = radio.name;
-						
-						if(selected == answer){
-							correct++;
+				//jack++ for showing me reduce
+				var numCorrect = songs.reduce(function(correct, song) {
+					var radio = document.querySelector('input[name = "' + song.url + '"]:checked');
+					if(radio) {
+						if(radio.value == radio.name){
+							return correct + 1;
 						}
 					}
-				}
-		
-				alert("You got " + correct + " out of " + songs.length + ".");
+					return correct;
+				}, 0);
 
+				alert("You got " + numCorrect + " out of " + songs.length + ".");
 			}
 
 			var sections = [
